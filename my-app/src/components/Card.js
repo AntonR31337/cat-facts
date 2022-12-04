@@ -1,33 +1,27 @@
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
-import like from "../img/like.svg";
 import { deleteData, toLike } from "../store/reducer";
-
-const CardBox = styled.div`
-text-align: center;
-color: palevioletred;
-width: 275px;
-border: 1px solid;
-height: 190px;
-overflow: scroll;
-background: gray;
-`;
-const Image = styled.img`
-width: 100%;
-height: 100px;
-`;
+import { Button, CardBox, CardText, Image } from "./styledComponentsStyles";
+import SvgIcons from "./SvgIcons";
 
 function Card({ data }) {
-  
+
   const dispatch = useDispatch();
+
+  let bgColor = '';
+
+  if (data.like) {
+    bgColor = 'gold';
+  } else {
+    bgColor = "currentColor";
+  }
 
   return (
     <CardBox>
       <Image src={data.img} />
-      {data.text}
+      <CardText>{data.text}</CardText>
       <div>
-        <button onClick={() => dispatch(toLike(data))}>Like!</button>
-        <button onClick={() => dispatch(deleteData(data))}>Delete</button>
+        <Button position='left: 5px' onClick={() => dispatch(toLike(data))}><SvgIcons color={bgColor} id="like" /></Button>
+        <Button position='right: 5px' onClick={() => dispatch(deleteData(data))}><SvgIcons id="close" /></Button>
       </div>
     </CardBox>
   );
