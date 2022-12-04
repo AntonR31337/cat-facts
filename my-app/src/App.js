@@ -1,33 +1,64 @@
 import './App.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { dataCats } from './store/reducer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import uniqid from 'uniqid';
 import Card from './components/Card';
+import Title from './components/Title';
 
 function App() {
 
   const dispatch = useDispatch();
 
-  const requestUrl = "https://meowfacts.herokuapp.com/?count=20";
+  const [isSorted, setIsSorted] = useState(false);
+
+  const requestUrl = "https://meowfacts.herokuapp.com/?count=6";
   const catFacts = useSelector((state) => state.cats.data);
 
-    useEffect(() => {
-      fetch(requestUrl)
-        .then(response => response.json())
-        .then(result => {
-          dispatch(dataCats(result.data))
-        })
-        .catch(err => console.log(err))
-    }, [])
+  const changeResult = (data) => {
+    const newData = [];
+
+    data.map((el) => {
+      newData.push({
+        id: uniqid(),
+        text: el,
+        like: false,
+        img: "https://picsum.photos/200/300",
+      });
+    });
+    return newData
+  }
+
+  useEffect(() => {
+    fetch(requestUrl)
+      .then(response => response.json())
+      .then(result => {
+        dispatch(dataCats(changeResult(result.data)))
+      })
+      .catch(err => console.log(err))
+  }, [])
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Hello World</h1>
+        <Title>Interested cat facts</Title>
+        <button onClick={() => setIsSorted(!isSorted)}>Sort</button>
       </header>
       <main className='main'>
-        {catFacts.map(catFact => <Card key={uniqid()} data={catFact} />)}
+        {isSorted
+          ? catFacts.map(catFact => {
+            if (catFact.like == true) {
+              return <Card
+                  key={catFact.id}
+                  data={catFact}
+                />
+            }
+          })
+          : catFacts.map(catFact => <Card
+                key={catFact.id}
+                data={catFact}
+              />)
+        }
       </main>
     </div>
   );
