@@ -25,7 +25,6 @@ function App() {
         id: uniqid(),
         text: el,
         like: false,
-        img: "https://i.pinimg.com/736x/86/ad/eb/86adebc9027efa836a642df9a19dfa42.jpg"
       });
     });
     return newData
